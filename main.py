@@ -27,14 +27,24 @@ def main():
     st.markdown("## Data")
     st.dataframe(df)
 
-
-    st.markdown("## Make piechart")
-    make_counts = df["Make"].value_counts()
-    st.write(make_counts, make_counts["count"])
-    make_percentage = df.with_columns((pl.col('count') / make_counts['count'].sum() * 100).alias('percentage'))
+    st.markdown('## Make piechart')
+    make_counts = df['Make'].value_counts()
     plt.figure(figsize=(10, 6))
-    plt.pie(make_percentage["percentage"].to_list(), labels=make_percentage["Make"].to_list(), autopct="%1.1f%%", startangle=140)
-    plt.title("Make distribution")
+    plt.pie(make_counts['count'], autopct='%1.1f%%', startangle=140)
+    make_labels = [f'{l}, {(s/make_counts["count"].sum())*100:0.1f}%' for l, s in zip(make_counts['Make'], make_counts['count'])]
+    plt.legend(bbox_to_anchor=(0.85, 1), loc='upper left', labels=make_labels)
+    plt.title('Make distribution')
+    plt.axis('equal')
+    st.pyplot(plt)
+    plt.close()
+
+    st.markdown('## Model piechart')
+    model_counts = df['Model'].value_counts()
+    plt.figure(figsize=(10, 6))
+    plt.pie(model_counts['count'], autopct='%1.1f%%', startangle=140)
+    model_labels = [f'{l}, {(s/model_counts["count"].sum())*100:0.1f}%' for l, s in zip(model_counts['Model'], model_counts['count'])]
+    plt.legend(bbox_to_anchor=(0.85, 1), loc='upper left', labels=model_labels)
+    plt.title('Model distribution')
     plt.axis('equal')
     st.pyplot(plt)
     plt.close()
